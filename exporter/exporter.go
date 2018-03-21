@@ -41,6 +41,10 @@ type NATSExporterOptions struct {
 	GetVarz       bool
 	GetSubz       bool
 	GetRoutez     bool
+	GetSServerz   bool
+	GetSStorez    bool
+	GetSClientsz  bool
+	GetSChannelsz bool
 	RetryInterval time.Duration
 	CertFile      string
 	KeyFile       string
@@ -153,7 +157,7 @@ func (ne *NATSExporter) initializeCollectors() error {
 		return fmt.Errorf("no servers configured to obtain metrics")
 	}
 
-	if !opts.GetConnz && !opts.GetRoutez && !opts.GetSubz && !opts.GetVarz {
+	if !opts.GetConnz && !opts.GetRoutez && !opts.GetSubz && !opts.GetVarz && !opts.GetSServerz && !opts.GetSChannelsz && !opts.GetSClientsz && !opts.GetSStorez {
 		return fmt.Errorf("no collectors specfied")
 	}
 	if opts.GetSubz {
@@ -167,6 +171,18 @@ func (ne *NATSExporter) initializeCollectors() error {
 	}
 	if opts.GetRoutez {
 		ne.createCollector("routez")
+	}
+	if opts.GetSServerz {
+		ne.createCollector("streaming/serverz")
+	}
+	if opts.GetSChannelsz {
+		ne.createCollector("streaming/channelsz")
+	}
+	if opts.GetSClientsz {
+		ne.createCollector("streaming/clientsz")
+	}
+	if opts.GetSStorez {
+		ne.createCollector("streaming/storez")
 	}
 	return nil
 }

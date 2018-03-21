@@ -202,7 +202,9 @@ func (nc *NATSCollector) initMetricsFromServers() {
 			i := response[k]
 			switch v := i.(type) {
 			case float64: // all json numbers are handled here.
-				nc.Stats[k] = newPrometheusGaugeVec(nc.endpoint, k, "")
+				// we need to replace the forward slashes in the nats streaming metric endpoint to use it as the subsystem name
+				subsystem := strings.Replace(nc.endpoint, "/", "_", -1)
+				nc.Stats[k] = newPrometheusGaugeVec(subsystem, k, "")
 			case string:
 				// do nothing
 			default:
